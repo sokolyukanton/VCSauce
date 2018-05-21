@@ -22,7 +22,7 @@ namespace VCSauce.Data.Migrations
 
             modelBuilder.Entity("VCSauce.Data.Entities.File", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Path")
@@ -32,7 +32,7 @@ namespace VCSauce.Data.Migrations
 
                     b.Property<int>("Type");
 
-                    b.Property<string>("VersionId");
+                    b.Property<int?>("VersionId");
 
                     b.HasKey("Id");
 
@@ -43,7 +43,7 @@ namespace VCSauce.Data.Migrations
 
             modelBuilder.Entity("VCSauce.Data.Entities.Repository", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
@@ -56,12 +56,15 @@ namespace VCSauce.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Path")
+                        .IsUnique();
+
                     b.ToTable("Repositories");
                 });
 
             modelBuilder.Entity("VCSauce.Data.Entities.Version", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Date");
@@ -69,7 +72,7 @@ namespace VCSauce.Data.Migrations
                     b.Property<string>("Label")
                         .IsRequired();
 
-                    b.Property<string>("RepositoryId");
+                    b.Property<int?>("RepositoryId");
 
                     b.HasKey("Id");
 

@@ -6,7 +6,7 @@ namespace VCSauce.Data.Entities
     public class Repository
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 

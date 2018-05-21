@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
 namespace VCSauce.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +13,8 @@ namespace VCSauce.Data.Migrations
                 name: "Repositories",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Path = table.Column<string>(nullable: false),
                     StoragePath = table.Column<string>(nullable: false)
@@ -26,10 +28,11 @@ namespace VCSauce.Data.Migrations
                 name: "Versions",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Date = table.Column<DateTime>(nullable: false),
                     Label = table.Column<string>(nullable: false),
-                    RepositoryId = table.Column<string>(nullable: true)
+                    RepositoryId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,11 +49,12 @@ namespace VCSauce.Data.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Path = table.Column<string>(nullable: false),
                     State = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
-                    VersionId = table.Column<string>(nullable: true)
+                    VersionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,6 +71,12 @@ namespace VCSauce.Data.Migrations
                 name: "IX_Files_VersionId",
                 table: "Files",
                 column: "VersionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repositories_Path",
+                table: "Repositories",
+                column: "Path",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Versions_RepositoryId",

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace VCSauce.Data.Entities
 {
@@ -12,17 +13,16 @@ namespace VCSauce.Data.Entities
         
         public DataContext(DbContextOptions options) : base(options)
         {
-            Database.Migrate();
+            if (Database.GetPendingMigrations().Any())
+            {
+                //Database.EnsureDeleted();
+                Database.Migrate();
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-           // builder.Entity<File>().Property(u => u.State).HasDefaultValue(State.New);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=VCSauceDb;Trusted_Connection=True;");
+            builder.Entity<Repository>().HasIndex(r => r.Path).IsUnique(true);
         }
     }
 }

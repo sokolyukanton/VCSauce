@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
-using  VCSauce.Data.Services;
+using VCSauce.Data.Managers;
 using MessageBox = System.Windows.MessageBox;
 
 namespace VCSauce.WPF
@@ -21,7 +21,7 @@ namespace VCSauce.WPF
             //FolderBrowserDialog d = new FolderBrowserDialog();
             //d.ShowDialog();
             //MessageBox.Show(string.Join(Environment.NewLine, storageManager.GetFilesFromDirectory(d.SelectedPath)));
-            manager.CreateRepository(@"C:\Users\AntonS\Documents\Visual Studio 2017\Projects\VCSauce", @"C:\Users\AntonS\Documents\Visual Studio 2017\Projects\VCSauce\Storage","Name");
+            manager.CreateRepository(@"I:\ВУЗ\Диплом", @"I:\ВУЗ\Диплом\Storage", "Name");
         }
     }
 }

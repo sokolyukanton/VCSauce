@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VCSauce.Data.Entities;
 using Version = VCSauce.Data.Entities.Version;
 
-namespace VCSauce.Data.Services
+namespace VCSauce.Data.Managers
 {
     public class RepositoryManager
     {
@@ -19,6 +20,7 @@ namespace VCSauce.Data.Services
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (storagePath == null) throw new ArgumentNullException(nameof(storagePath));
+            if(_db.Repositories.Any(r=>r.Path==path)) throw new ArgumentException("such path exist", nameof(path));
 
             System.IO.Directory.CreateDirectory(storagePath);
             var storageManager = new StorageManager(storagePath);
@@ -26,7 +28,7 @@ namespace VCSauce.Data.Services
             {
                 Path = path,
                 StoragePath = storagePath,
-                Name = !string.IsNullOrEmpty(name)?name:$"Repository{_db.Repositories.Count()+1}"
+                Name = !string.IsNullOrEmpty(name)?name:$"Repository {_db.Repositories.Count()+1}"
             };
             var initVersion=new Version
             {
@@ -34,9 +36,27 @@ namespace VCSauce.Data.Services
                 Label = "Initial commit",
                 Files = storageManager.GetFilesFromDirectory(path).ToList()
             };
+            storageManager.InitialDirectoryToStorage(path, storagePath);
             newRepo.Versions.Add(initVersion);
             _db.Repositories.Add(newRepo);
             _db.SaveChanges();
+        }
+
+        public void RenameRepository(Repository repo)
+        {
+            _db.Repositories.Update(repo);
+            _db.SaveChanges();
+        }
+
+        public void DeleteRepository(Repository repo)
+        {
+            _db.Repositories.Remove(repo);
+            _db.SaveChanges();
+        }
+
+        public IEnumerable<Repository> GetRepositories()
+        {
+            return _db.Repositories;
         }
     }
 }
