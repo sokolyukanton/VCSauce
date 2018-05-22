@@ -16,6 +16,9 @@ namespace VCSauce.Data.Entities
         [Required]
         public State State { get; set; }
 
+        [Required]
+        public byte[] Hash { get; set; }
+
         public override string ToString()
         {
             return $"{nameof(Path)}: {Path}, {nameof(Type)}: {Type}, {nameof(State)}: {State}";

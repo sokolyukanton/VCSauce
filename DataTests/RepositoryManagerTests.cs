@@ -9,7 +9,8 @@ namespace DataTests
     [TestClass]
     public class RepositoryManagerTests
     {
-        RepositoryManager rm = new RepositoryManager();
+        private readonly RepositoryManager _rm = new RepositoryManager();
+
         [TestMethod]
         public void RepositoryCreated()
         {
@@ -19,7 +20,7 @@ namespace DataTests
             // act
             try
             {
-                rm.CreateRepository(path, storagepath);
+                _rm.CreateRepository(path, storagepath);
             }
             catch (ArgumentException e)
             {
@@ -36,8 +37,8 @@ namespace DataTests
             var path = @"I:\ВУЗ\Диплом";
             var storagepath = @"I:\ВУЗ\Диплом\Storage";
             // act
-            rm.CreateRepository(path, storagepath);
-            rm.CreateRepository(path, storagepath);
+            _rm.CreateRepository(path, storagepath);
+            _rm.CreateRepository(path, storagepath);
             // assert 
             
         }
@@ -46,13 +47,13 @@ namespace DataTests
         public void RepositoryRenamed()
         {
             // arrange
-            var repo = rm.GetRepositories().First();
+            var repo = _rm.GetRepositories().First();
             var oldreponame = repo.Name;
             repo.Name = Guid.NewGuid().ToString("n").Substring(0, 8); 
             // act
-            rm.RenameRepository(repo);
+            _rm.RenameRepository(repo);
             // assert 
-            Assert.AreNotSame(oldreponame, rm.GetRepositories().First().Name);
+            Assert.AreNotSame(oldreponame, _rm.GetRepositories().First().Name);
         }
 
         [TestMethod]
@@ -61,12 +62,26 @@ namespace DataTests
             // arrange
             var path = @"I:\ВУЗ\Диплом\Storage";
             var storagepath = @"I:\ВУЗ\Диплом\Storage\Storage";
-            Directory.Delete(path,true);
             // act
-            rm.CreateRepository(path, storagepath);
-            rm.DeleteRepository(rm.GetRepositories().Single(r=>r.Path==path));
+            Directory.Delete(path, true);
+            _rm.CreateRepository(path, storagepath);
+            _rm.DeleteRepository(_rm.GetRepositories().Single(r=>r.Path==path));
             // assert 
-            Assert.IsFalse(rm.GetRepositories().Any(r => r.Path == path));
+            Assert.IsFalse(_rm.GetRepositories().Any(r => r.Path == path));
+        }
+
+        [TestMethod]
+        public void RepositoryStorageChanged()
+        {
+            // arrange
+            var repo = _rm.GetRepositories().First();
+            var previouspath = repo.StoragePath;
+            var newstoragepath = @"I:\ВУЗ\Диплом\NewStorage";
+            // act
+            _rm.ChangeRepositoryStorage(repo,newstoragepath);
+            // assert 
+            Assert.AreEqual(newstoragepath,_rm.GetRepositories().First().StoragePath);
+            _rm.ChangeRepositoryStorage(_rm.GetRepositories().First(),previouspath);
         }
     }
 }

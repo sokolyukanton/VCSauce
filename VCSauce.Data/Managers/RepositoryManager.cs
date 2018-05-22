@@ -23,7 +23,6 @@ namespace VCSauce.Data.Managers
             if(_db.Repositories.Any(r=>r.Path==path)) throw new ArgumentException("such path exist", nameof(path));
 
             System.IO.Directory.CreateDirectory(storagePath);
-            var storageManager = new StorageManager(storagePath);
             var newRepo=new Repository
             {
                 Path = path,
@@ -34,9 +33,9 @@ namespace VCSauce.Data.Managers
             {
                 Date = DateTime.Now,
                 Label = "Initial commit",
-                Files = storageManager.GetFilesFromDirectory(path).ToList()
+                Files = StorageManager.GetFilesFromDirectory(path).ToList()
             };
-            storageManager.InitialDirectoryToStorage(path, storagePath);
+            StorageManager.InitialDirectoryToStorage(path, storagePath);
             newRepo.Versions.Add(initVersion);
             _db.Repositories.Add(newRepo);
             _db.SaveChanges();
@@ -51,6 +50,14 @@ namespace VCSauce.Data.Managers
         public void DeleteRepository(Repository repo)
         {
             _db.Repositories.Remove(repo);
+            _db.SaveChanges();
+        }
+
+        public void ChangeRepositoryStorage(Repository repo,string newpath)
+        {
+            StorageManager.MoveDirectory(repo.StoragePath,newpath);
+            repo.StoragePath= newpath;
+            _db.Repositories.Update(repo);
             _db.SaveChanges();
         }
 

@@ -13,7 +13,7 @@ namespace VCSauce.WPF
     {
         private RepositoryManager manager=new RepositoryManager();
 
-        StorageManager storageManager=new StorageManager();
+
 
         public MainWindow()
         {
