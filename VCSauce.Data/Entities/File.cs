@@ -23,6 +23,19 @@ namespace VCSauce.Data.Entities
         {
             return $"{nameof(Path)}: {Path}, {nameof(Type)}: {Type}, {nameof(State)}: {State}";
         }
+
+        public File(File file)
+        {
+            this.Path = file.Path;
+            this.Type = file.Type;
+            this.State = file.State;
+            this.Hash = file.Hash;
+        }
+
+        public File()
+        {
+            
+        }
     }
 
     public enum State

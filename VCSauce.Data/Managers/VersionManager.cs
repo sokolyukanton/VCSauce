@@ -16,7 +16,7 @@ namespace VCSauce.Data.Managers
             _db = new DataContextFactory().CreateDbContext(new string[] { });
         }
 
-        public void CreateVersion(Repository repository, string name)
+        public void CreateVersion(Repository repository, string label="")
         {
             List<File> latestFiles=new List<File>();
             var repo=_db.Repositories.Include(r=>r.Versions).ThenInclude(v=>v.Files).Single(r=>r.Id==repository.Id);
@@ -42,16 +42,29 @@ namespace VCSauce.Data.Managers
                     }
                 }
             }
-            var actualFiles = StorageManager.GetActualForNewVersionFiles(latestFiles,repo.Path);
+            var actualFiles = StorageManager.GetActualForNewVersionFiles(latestFiles,repo.Path,repo.StoragePath);
+            if (actualFiles.Count == 0)
+                throw new InvalidOperationException("No changes in repository yet");
             StorageManager.MoveFilesToStorage(actualFiles,repo.Path,repo.StoragePath, repo.Versions.Count + 1);
             var newversion=new Version
             {
                 Date = DateTime.Now,
-                Label = !string.IsNullOrEmpty(name) ? name : $"Version {repo.Versions.Count + 1}",
+                Label = !string.IsNullOrEmpty(label) ? label : $"Version {repo.Versions.Count + 1}",
                 Files = actualFiles
             };
             repo.Versions.Add(newversion);
             _db.Repositories.Update(repo);
+            _db.SaveChanges();
+        }
+
+        public List<Version> GetVersions(Repository repository)
+        {
+            return _db.Repositories.Include(r => r.Versions).ThenInclude(v=>v.Files).Single(r => r.Id == repository.Id).Versions;
+        }
+
+        public void RenameVersion(Version renamedVersion)
+        {
+            _db.Versions.Update(renamedVersion);
             _db.SaveChanges();
         }
     }

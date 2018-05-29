@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using VCSauce.Data.Entities;
 using Version = VCSauce.Data.Entities.Version;
 
@@ -47,9 +48,11 @@ namespace VCSauce.Data.Managers
             _db.SaveChanges();
         }
 
-        public void DeleteRepository(Repository repo)
+        public void DeleteRepository(Repository repository)
         {
-            _db.Repositories.Remove(repo);
+            //var repo = _db.Repositories.Include(r => r.Versions).ThenInclude(v => v.Files).Single(r => r.Id == repository.Id);
+            StorageManager.RemoveDirectory(repository.StoragePath);
+            _db.Repositories.Remove(repository);
             _db.SaveChanges();
         }
 

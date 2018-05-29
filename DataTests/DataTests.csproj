@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="RepositoryManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VersionManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -23,6 +23,8 @@ namespace VCSauce.Data.Entities
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Repository>().HasIndex(r => r.Path).IsUnique(true);
+            builder.Entity<Repository>().HasMany(r => r.Versions).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Version>().HasMany(v => v.Files).WithOne().OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

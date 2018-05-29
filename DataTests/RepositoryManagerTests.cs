@@ -16,17 +16,12 @@ namespace DataTests
         {
             // arrange
             var path = @"I:\ВУЗ\Диплом";
-            var storagepath = @"I:\ВУЗ\Диплом\Storage";
+            var storagepath = $@"{path}\Storage";
             // act
-            try
-            {
-                _rm.CreateRepository(path, storagepath);
-            }
-            catch (ArgumentException e)
-            {
-            }
+            _rm.DeleteRepository(_rm.GetRepositories().Single(r=>r.Path==path));
+            _rm.CreateRepository(path, storagepath);
             // assert 
-            
+            Assert.IsTrue(_rm.GetRepositories().Any(r => r.Path==path));
         }
 
         [TestMethod]
@@ -61,9 +56,8 @@ namespace DataTests
         {
             // arrange
             var path = @"I:\ВУЗ\Диплом\Storage";
-            var storagepath = @"I:\ВУЗ\Диплом\Storage\Storage";
+            var storagepath = $@"{path}\Storage";
             // act
-            Directory.Delete(path, true);
             _rm.CreateRepository(path, storagepath);
             _rm.DeleteRepository(_rm.GetRepositories().Single(r=>r.Path==path));
             // assert 
